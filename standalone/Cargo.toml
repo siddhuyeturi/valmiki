@@ -1,0 +1,13 @@
+[package]
+name = "valmiki-standalone"
+version.workspace = true
+edition = "2024"
+rust-version.workspace = true
+license-file.workspace = true
+publish.workspace = true
+
+[dependencies]
+actix-web = { workspace = true, features = ["secure-cookies"] }
+base64 = { workspace = true }
+tokio = { workspace = true, features = ["full"] }
+valmiki-visitors = { path = "../crates/visitors", version = "*" }
