@@ -112,11 +112,8 @@ where
                     should_set_cookie = true;
                     VisitorId::generate(64)
                 });
-
             let _ = req.extensions_mut().insert(vid.clone());
-
             let mut res = service.call(req).await?;
-
             if should_set_cookie {
                 let vidc = CookieBuilder::new(COOKIE_NAME, vid.as_ref().to_string())
                     .permanent()

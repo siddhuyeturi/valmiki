@@ -9,5 +9,13 @@ publish.workspace = true
 [dependencies]
 actix-web = { workspace = true, features = ["secure-cookies"] }
 base64 = { workspace = true }
+bb8 = { workspace = true }
+log = { workspace = true, features = [
+  "max_level_debug",
+  "release_max_level_info",
+  "std"
+] }
+pretty_env_logger = { workspace = true }
+redis = { workspace = true, features = ["aio", "bb8", "tokio-comp"] }
 tokio = { workspace = true, features = ["full"] }
 valmiki-visitors = { path = "../crates/visitors", version = "*" }

@@ -1,0 +1,25 @@
+// Project tasks configuration. See https://zed.dev/docs/tasks for documentation.
+//
+// Example:
+[
+  {
+    "label": "Run Standalone Server",
+    "command": "cargo",
+    "args": [
+      "watch",
+      "--env-file .env",
+      "-w .env",
+      "-w standalone/src",
+      "-w Cargo.toml",
+      "-x \"run -p valmiki-standalone\"",
+    ],
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "reveal_target": "dock",
+    "hide": "never",
+    "shell": "system",
+    "show_summary": true,
+    "show_command": true,
+  },
+]
