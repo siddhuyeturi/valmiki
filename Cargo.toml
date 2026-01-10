@@ -2,7 +2,7 @@
 resolver = "3"
 members = [
   "crates/visitors",
-  "valmiki",
+  "standalone",
 ]
 
 [workspace.package]
