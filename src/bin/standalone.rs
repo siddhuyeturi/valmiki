@@ -1,17 +1,15 @@
 use actix_web::{
-    App, HttpServer,
+    App, HttpRequest, HttpResponse, HttpServer,
     cookie::Key,
     middleware::{Compress, Logger},
-    web,
+    web::{self, Bytes},
 };
 use base64::Engine;
-use bb8::Pool;
 use log::info;
-use redis::Client;
-use valmiki_visitors::VisitorMiddleware;
+use valmiki::visitors::VisitorMiddleware;
 
-#[tokio::main]
-async fn main() {
+#[tokio::main(flavor = "current_thread")]
+async fn main() -> anyhow::Result<()> {
     // init logger
     pretty_env_logger::init();
     // load secret key from env to sign/encrypt cookies
@@ -23,30 +21,22 @@ async fn main() {
             Key::derive_from(&decoded_key)
         })
         .expect("failed to read secret key from env var");
-    // redis url
-    let redis_url = std::env::var("REDIS_URL").expect("REDIS_URL env variable not set");
-    let client = Client::open(redis_url.as_str()).expect("Failed to create a redis client");
-    let redis_pool = Pool::builder()
-        .build(client)
-        .await
-        .expect("Failed to create a redis bb8 connection pool");
-    info!("http://localhost:8080/");
+    info!("http://127.0.0.1:8080/");
     HttpServer::new(move || {
         App::new()
-            .app_data(web::ThinData(redis_pool.clone()))
             .wrap(VisitorMiddleware::new(key.clone()))
             .wrap(Logger::default())
             .wrap(Compress::default())
-            .service(index)
+            .default_service(web::to(default_handler))
     })
     .bind_auto_h2c(("127.0.0.1", 8080))
-    .expect("Failed to bind to 127.0.0.1:8080")
+    .map_err(|e| anyhow::anyhow!("Failed to bind h2c on 127.0.0.1:8080 because {e}"))?
     .run()
-    .await
-    .expect("Failed to run server")
+    .await?;
+
+    Ok(())
 }
 
-#[actix_web::get("/")]
-pub async fn index() -> &'static str {
-    "Hello, world!"
+pub async fn default_handler(_req: HttpRequest, _payload: Bytes) -> HttpResponse {
+    HttpResponse::NotFound().body("Hello, World!")
 }

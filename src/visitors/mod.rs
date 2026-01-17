@@ -87,9 +87,7 @@ where
     type Response = ServiceResponse<B>;
     type Error = Error;
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>> + 'static>>;
-
     forward_ready!(service);
-
     fn call(&self, req: ServiceRequest) -> Self::Future {
         let key = self.key.clone();
         let service = self.service.clone();
@@ -127,7 +125,6 @@ where
                     res.response_mut().add_cookie(vc)?;
                 }
             }
-
             Ok(res)
         })
     }

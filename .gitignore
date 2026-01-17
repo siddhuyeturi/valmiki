@@ -1,3 +1,4 @@
 /target
 /.sqlx
 .env
+*.db
